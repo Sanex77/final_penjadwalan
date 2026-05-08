@@ -1,0 +1,190 @@
+/* Base */
+
+body,
+table,
+td {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+img {
+    -ms-interpolation-mode: bicubic;
+    border: 0;
+    height: auto;
+    line-height: 100%;
+    outline: none;
+    text-decoration: none;
+}
+
+body {
+    background-color: #f8fafc; /* Warna background luar email */
+    color: #475569;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+/* Layout */
+
+.wrapper {
+    background-color: #f8fafc;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Header */
+
+.header {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.header a {
+    color: #4f46e5; /* Warna teks/logo "Laravel" kalau gambar ga ada */
+    font-size: 19px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0 1px 0 white;
+}
+
+/* Body */
+
+.body {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.inner-body {
+    background-color: #ffffff;
+    margin: 0 auto;
+    padding: 0;
+    width: 570px; /* Lebar email */
+}
+
+.content-cell {
+    padding: 35px;
+}
+
+/* Typography */
+
+h1 {
+    color: #1e293b;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 0;
+    text-align: left;
+}
+
+p {
+    color: #475569;
+    font-size: 16px;
+    line-height: 1.5em;
+    margin-top: 0;
+    text-align: left;
+}
+
+/* Buttons - Bagian paling penting buat tampilan Premium */
+
+.action {
+    margin: 30px auto;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.button {
+    border-radius: 8px; /* Bikin tombol membulat modern */
+    display: inline-block;
+    color: #ffffff !important;
+    text-decoration: none;
+    background-color: #4f46e5; /* Warna Indigo Premium Dashboard kamu */
+    border: 10px solid #4f46e5; /* Padding tombol */
+    font-weight: bold;
+}
+
+.button-blue,
+.button-primary {
+    background-color: #4f46e5;
+    border-top: 10px solid #4f46e5;
+    border-right: 18px solid #4f46e5;
+    border-bottom: 10px solid #4f46e5;
+    border-left: 18px solid #4f46e5;
+}
+
+/* Footer */
+
+.footer {
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    width: 570px;
+}
+
+.footer p {
+    color: #94a3b8;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Panels */
+
+.panel {
+    background-color: #f1f5f9;
+    border-left: 4px solid #4f46e5; /* Aksen warna di samping panel */
+    margin: 20px 0;
+    padding: 15px;
+}
+
+.panel-content {
+    padding: 0;
+}
+
+.panel-item {
+    padding: 0;
+}
+
+/* Tables */
+
+.table table {
+    margin: 30px auto;
+    width: 100%;
+}
+
+.table th {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin: 0;
+}
+
+.table td {
+    color: #475569;
+    font-size: 15px;
+    line-height: 1.2em;
+    padding: 10px 0;
+    margin: 0;
+}
+
+/* Media Queries */
+
+@media only screen and (max-width: 600px) {
+    .inner-body {
+        width: 100% !important;
+    }
+
+    .footer {
+        width: 100% !important;
+    }
+}
