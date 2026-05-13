@@ -9,7 +9,9 @@ class Lab extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nm_lab'];
+    protected $fillable = 
+    
+    ['nm_lab', 'kapasitas', 'fasilitas'];
 
     // TAMBAHKAN INI (Kunci untuk memanggil nama user)
     

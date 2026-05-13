@@ -165,9 +165,10 @@ Route::post('/spv/asisten', [ScheduleController::class, 'storeAsisten'])->name('
 Route::get('/spv/akun', [RegisteredUserController::class, 'create'])->name('spv.akun');
 Route::post('/spv/akun', [RegisteredUserController::class, 'store'])->name('spv.akun.submit');
 
-
 Route::get('/spv/lab', [\App\Http\Controllers\LabController::class, 'index'])->name('spv.lab');
-
+Route::post('/spv/lab', [\App\Http\Controllers\LabController::class, 'store'])->name('lab.store');
+Route::delete('/spv/lab/{id}', [\App\Http\Controllers\LabController::class, 'destroy'])->name('lab.destroy'); 
+Route::put('/lab/{id}', [\App\Http\Controllers\LabController::class, 'update'])->name('lab.update');
 });
 
 
