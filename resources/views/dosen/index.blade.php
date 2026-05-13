@@ -94,17 +94,26 @@
     </div>
 
     {{-- BARIS 3 --}}
-    <div class="form-group">
+   <div class="form-group full-width" style="display: flex; gap: 20px; align-items: flex-start;">
+    <div style="flex: 1;">
         <label>Lab Tersedia</label>
-        <select name="lab" id="select_lab" disabled required>
-            <option value="">-- Klik Cek Dulu --</option>
+        <select name="lab" id="select_lab" class="form-input" disabled required>
+            <option value="">-- Klik Tombol Cek Dulu --</option>
         </select>
     </div>
+    
+    {{-- BOX DESKRIPSI FASILITAS --}}
+    <div id="lab_info_box" style="flex: 1; padding: 15px; border: 1px dashed #0056b3; border-radius: 8px; background: #f0f7ff; display: none;">
+        <h4 style="margin-top: 0; color: #0056b3; font-size: 14px;">🛠️ Fasilitas & Kapasitas:</h4>
+        <p id="lab_description_text" style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; white-space: pre-line;"></p>
+    </div>
+</div>
 
     <div class="form-group" style="grid-column: span 2;">
         <label>Mata Kuliah / Keperluan</label>
         <input type="text" name="keperluan" required placeholder="Contoh: Pemrograman Web (AC)" value="{{ old('keperluan') }}">
     </div>
+
 </div>
 
         {{-- BAGIAN UPLOAD (KHUSUS NON-DOSEN) --}}
@@ -195,8 +204,7 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    <script>document.addEventListener('DOMContentLoaded', function() {
     // 1. INISIALISASI ELEMENT
     const bookingForm = document.getElementById('booking-form');
     const btnCek = document.getElementById('btnCekLab');
@@ -254,6 +262,10 @@
         btnSubmit.style.opacity = '0.5';
         btnCek.innerText = '🔍 Cek Lab Kosong';
         btnCek.style.background = 'var(--slate-800)';
+        
+        // Sembunyikan box info fasilitas saat reset
+        const infoBox = document.getElementById('lab_info_box');
+        if (infoBox) infoBox.style.display = 'none';
     }
 
     [checkTanggal, jamMulai, jamSelesai].forEach(el => {
@@ -289,11 +301,30 @@
 
             if (data.success) {
                 selectLab.innerHTML = '';
+                
+                // PASTIKAN DATA DARI CONTROLLER SEKARANG MENGIRIM ARRAY OBJECT, BUKAN CUMA STRING NAMA
                 if (data.labs.length > 0) {
+                    // Tambahkan opsi placeholder
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = "";
+                    defaultOption.text = "-- Pilih Lab --";
+                    selectLab.appendChild(defaultOption);
+
                     data.labs.forEach(lab => {
                         const option = document.createElement('option');
-                        option.value = lab;
-                        option.text = lab.toUpperCase();
+                        // Akses properti object jika backend mengirim (nm_lab, fasilitas, kapasitas)
+                        // Jika backend lama masih mengirim string, sesuaikan bagian ini
+                        const labName = typeof lab === 'object' ? lab.nm_lab : lab;
+                        const labFasilitas = typeof lab === 'object' ? (lab.fasilitas || 'Tidak ada data') : 'Tidak ada data';
+                        const labKapasitas = typeof lab === 'object' ? (lab.kapasitas || 0) : 0;
+
+                        option.value = labName;
+                        option.text = labName.toUpperCase();
+                        
+                        // Simpan data fasilitas dan kapasitas ke atribut HTML custom
+                        option.setAttribute('data-fasilitas', labFasilitas);
+                        option.setAttribute('data-kapasitas', labKapasitas);
+                        
                         selectLab.appendChild(option);
                     });
                     
@@ -316,7 +347,30 @@
     });
 
     /* ==========================================
-       4. LOADING EFFECT & INITIALIZER
+       4. MENAMPILKAN DESKRIPSI FASILITAS
+    ========================================== */
+    selectLab.addEventListener('change', function() {
+        const infoBox = document.getElementById('lab_info_box');
+        const descText = document.getElementById('lab_description_text');
+        
+        // Pastikan box-nya ada di HTML
+        if (!infoBox || !descText) return;
+
+        if (this.value) {
+            const selectedOption = this.options[this.selectedIndex];
+            const fasilitas = selectedOption.getAttribute('data-fasilitas');
+            const kapasitas = selectedOption.getAttribute('data-kapasitas');
+            
+            // Tampilkan Box dan isi teksnya
+            infoBox.style.display = 'block';
+            descText.innerHTML = `<strong>Kapasitas:</strong> ${kapasitas} Orang<br><strong>Fasilitas:</strong><br>${fasilitas}`;
+        } else {
+            infoBox.style.display = 'none';
+        }
+    });
+
+    /* ==========================================
+       5. LOADING EFFECT & INITIALIZER
     ========================================== */
     bookingForm.addEventListener('submit', function() {
         const btn = this.querySelector('button[type="submit"]');
@@ -324,17 +378,14 @@
         btn.style.opacity = '0.7';
         btn.style.pointerEvents = 'none';
     });
-     flatpickr(".timepicker", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-            minuteIncrement: 15
-        });
-
-    // Flatpickr (Opsional jika input type="text")
-    // flatpickr(".timepicker", { ... });
-});
-    </script>
+    
+    flatpickr(".timepicker", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 15
+    });
+});</script>
 </body>
 </html>
