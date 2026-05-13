@@ -22,6 +22,9 @@
                         <button id="btnCetakPDF" class="btn-premium" style="background-color: #ef4444;">
                         PDF 📄
                         </button>
+                        <button onclick="toggleTambahJadwal()" class="btn-premium" style="background-color: #3b82f6; color: white;">
+        ➕ Tambah Jadwal Manual
+    </button>
                         <select id="filterDay" class="filter-select">
                             <option value="">🌍 All Days</option>
                             <option value="Senin">Senin</option>
@@ -40,7 +43,52 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-4">
+                
+
+<div id="form-tambah-jadwal" class="card-premium" style="display: none; margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+    <div class="p-4 border-b" style="background-color: #f8fafc; border-radius: 8px 8px 0 0;">
+        <h3 class="font-bold" style="font-size: 16px;">Form Tambah Jadwal Manual</h3>
+    </div>
+    <div class="p-6">
+        <form action="{{ route('schedule.store') }}" method="POST" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            @csrf
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">Tanggal</label>
+                <input type="date" name="tanggal" required class="input-inline" style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">Ruang Lab</label>
+                <select name="lab" required class="filter-select" style="width: 100%;">
+                    <option value="">-- Pilih Lab --</option>
+                    @foreach($labs as $lab)
+                        <option value="{{ $lab->nm_lab }}">{{ $lab->nm_lab }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">Jam Mulai</label>
+                <input type="time" name="jam_mulai" required class="input-inline" style="width: 100%;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">Jumlah SKS (Untuk hitung otomatis jam selesai)</label>
+                <input type="number" name="sks" required min="1" max="6" class="input-inline" style="width: 100%;" placeholder="Contoh: 2">
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">Mata Kuliah</label>
+                <input type="text" name="matkul" required class="input-inline" style="width: 100%;" placeholder="Nama Matkul">
+            </div>
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">Nama Dosen</label>
+                <input type="text" name="dosen" required class="input-inline" style="width: 100%;" placeholder="Nama Dosen">
+            </div>
+            <div style="grid-column: span 2; text-align: right; margin-top: 10px;">
+                <button type="submit" class="btn-premium" style="background-color: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                    💾 Simpan Jadwal
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
     <div class="mb-4">
     <form action="{{ route('spv.jadwal') }}" method="GET" id="form-filter">
         <label>Cek Jadwal Tanggal:</label>
@@ -279,6 +327,15 @@ function toggleAsistenManager() {
             icon.style.transform = "rotate(0deg)"; // Kembali semula
         }
     }
+
+    function toggleTambahJadwal() {
+    const form = document.getElementById('form-tambah-jadwal');
+    if (form.style.display === "none") {
+        form.style.display = "block";
+    } else {
+        form.style.display = "none";
+    }
+}
 </Script>
 @endsection
 </body>

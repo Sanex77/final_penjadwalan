@@ -37,6 +37,9 @@
             <a href="{{ route('spv.asisten') }}" class="{{ request()->routeIs('spv.asisten') ? 'active' : '' }}">
                 <i class="fas fa-user-clock"></i> Jadwal Asisten
             </a>
+            <a href="{{ route('spv.lab') }}" class="{{ request()->routeIs('spv.lab') ? 'active' : '' }}">
+                <i class="fa fa-desktop"></i> Data Lab
+            </a>
             <a href="{{ route('spv.akun') }}" class="{{ request()->routeIs('spv.akun') ? 'active' : '' }}">
                 <i class="fas fa-users-cog"></i> Pembuatan Akun
             </a>

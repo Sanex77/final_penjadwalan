@@ -147,7 +147,7 @@ Route::middleware(['auth', 'role:spv'])->group(function () {
     
     // Rute ke Halaman Manajemen Jadwal
     Route::get('/spv/jadwal', [\App\Http\Controllers\ScheduleController::class, 'manajemenJadwal'])->name('spv.jadwal');
-    
+    Route::post('/spv/jadwal', [ScheduleController::class, 'store'])->name('schedule.store');
     // Rute ke Halaman Jadwal Asisten
     Route::get('/spv/asisten', [\App\Http\Controllers\ScheduleController::class, 'jadwalAsisten'])->name('spv.asisten');
 
@@ -163,8 +163,10 @@ Route::delete('/spv/asisten/{id}', [ScheduleController::class, 'destroyAsisten']
 // Route untuk Tambah Jadwal Asisten Baru
 Route::post('/spv/asisten', [ScheduleController::class, 'storeAsisten'])->name('asisten.store');
 Route::get('/spv/akun', [RegisteredUserController::class, 'create'])->name('spv.akun');
-    Route::post('/spv/akun', [RegisteredUserController::class, 'store'])->name('spv.akun.submit');
+Route::post('/spv/akun', [RegisteredUserController::class, 'store'])->name('spv.akun.submit');
 
+
+Route::get('/spv/lab', [\App\Http\Controllers\LabController::class, 'index'])->name('spv.lab');
 
 });
 

@@ -40,34 +40,8 @@ class ScheduleController extends Controller
         return view('tv.display', compact('schedules'));
     }
 
-    // Tampilan di Dashboard SPV
-    public function index(Request $request) 
-    {
-        $labs = Lab::all();
-        $bookings = Booking::with('user')
-                           ->where('status', 'pending')
-                           ->latest()
-                           ->get();
-
-        $filterDate = $request->query('filter_date', now()->toDateString());
-
-        // 1. Query ke database
-        $schedules = Schedule::whereDate('tanggal', $filterDate)
-                           ->orderBy('jam_mulai', 'asc')
-                           ->get();
-                           
-        // 2. Siapkan Query
-        $query = Schedule::query();
-
-        if ($filterDate) {
-            $query->whereDate('tanggal', $filterDate);
-        } else {
-            $query->whereBetween('tanggal', [now()->toDateString(), now()->addDays(7)->toDateString()]);
-        }
-
-        return view('spv.index', compact('schedules', 'bookings', 'labs'));
-    }
-
+  
+  
     public function store(Request $request)
     {
         $request->validate([

@@ -5,7 +5,14 @@ use App\Models\Lab; // Pastikan model Lab sudah ada
 use Illuminate\Http\Request;
 
 class LabController extends Controller
-{
+{   
+    public function index()
+    {
+        $labs = Lab::all(); 
+        return view('spv.lab', compact('labs')); 
+    }
+    
+
     public function store(Request $request)
     {
         // Validasi agar data yang masuk ke atribut nm_lab tidak kosong
