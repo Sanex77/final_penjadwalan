@@ -138,7 +138,9 @@ class BookingController extends Controller
     $allLabs = Lab::pluck('nm_lab')->toArray();
 
     // 5. Lab yang tersedia = Semua Lab dikurangi Lab Sibuk
-    $availableLabs = array_values(array_diff($allLabs, $allBusyLabs));
+  $availableLabs = Lab::whereNotIn('nm_lab', $allBusyLabs)
+                    ->select('nm_lab', 'kapasitas', 'fasilitas')
+                    ->get();
 
     return response()->json([
         'success' => true,

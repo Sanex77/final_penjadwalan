@@ -42,45 +42,66 @@ class ScheduleController extends Controller
 
   
   
-    public function store(Request $request)
-    {
-        $request->validate([
-            'tanggal' => 'required|date',
-            'lab' => 'required',
-            'jam_mulai' => 'required',
-            'matkul' => 'required',
-            'sks' => 'required|numeric',
-            'dosen' => 'required',
-        ]);
+    // app/Http/Controllers/ScheduleController.php
 
-        $menit = $request->sks * 50;
-        $jam_selesai = date('H:i', strtotime($request->jam_mulai . " + $menit minutes"));
-        $hari = Carbon::parse($request->tanggal)->locale('id')->translatedFormat('l');
+public function store(Request $request)
+{
+    $request->validate([
+        'tanggal' => 'required|date',
+        'lab' => 'required',
+        'jam_mulai' => 'required',
+        'matkul' => 'required',
+        'sks' => 'required|numeric',
+        'dosen' => 'required',
+    ]);
 
-        $bentrok = Schedule::where('tanggal', $request->tanggal)
-            ->where('lab', $request->lab)
-            ->where(function($query) use ($request, $jam_selesai) {
-                $query->where('jam_mulai', '<', $jam_selesai)
-                      ->where('jam_selesai', '>', $request->jam_mulai);
-            })->first();
+    $menit = $request->sks * 50;
+    $jam_selesai = date('H:i', strtotime($request->jam_mulai . " + $menit minutes"));
+    $hari = Carbon::parse($request->tanggal)->locale('id')->translatedFormat('l');
 
-        if ($bentrok) {
-            return back()->with('error', "⚠️ Gagal! Jadwal bentrok dengan matkul: {$bentrok->matkul} ({$bentrok->jam_mulai} - {$bentrok->jam_selesai}) di {$request->lab}.");
-        }
+    // Cek bentrok...
+    
+    Schedule::create([
+        'tanggal' => $request->tanggal,
+        'hari' => $hari,
+        'lab' => $request->lab,
+        'jam_mulai' => $request->jam_mulai,
+        'jam_selesai' => $jam_selesai,
+        'matkul' => $request->matkul,
+        'sks' => $request->sks,
+        'dosen' => $request->dosen,
+        'nama_asisten' => 'TBD', // TAMBAHKAN INI AGAR TIDAK ERROR
+    ]);
 
-        Schedule::create([
-            'tanggal' => $request->tanggal,
-            'hari' => $hari,
-            'lab' => $request->lab,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $jam_selesai,
-            'matkul' => $request->matkul,
-            'sks' => $request->sks,
-            'dosen' => $request->dosen,
-        ]);
+    return back()->with('success', '✅ Jadwal berhasil ditambahkan!');
+}
 
-        return back()->with('success', '✅ Jadwal berhasil ditambahkan!');
+public function approve($id)
+{
+    $booking = Booking::with(['user'])->findOrFail($id);
+
+    if ($booking->lab === 'TBD' || empty($booking->lab)) {
+        return back()->with('error', '⚠️ Gagal! Lab belum dipilih.');
     }
+
+    $booking->update(['status' => 'approved']);
+    $hari = \Carbon\Carbon::parse($booking->tanggal)->locale('id')->translatedFormat('l');
+
+    Schedule::create([
+        'tanggal'     => $booking->tanggal,
+        'hari'        => $hari,
+        'lab'         => $booking->lab, 
+        'jam_mulai'   => $booking->jam_mulai,
+        'jam_selesai' => $booking->jam_selesai,
+        'matkul'      => $booking->keperluan,
+        'sks'         => $booking->sks ?? 0,
+        'dosen'       => $booking->user->name ?? 'No Name',
+        'nama_asisten' => 'TBD', // TAMBAHKAN INI AGAR TIDAK ERROR
+    ]);
+
+    $this->sendWhatsAppNotification($booking);
+    return back()->with('success', '✅ Booking disetujui!');
+}
 
     public function destroy(Schedule $schedule)
     {
@@ -88,36 +109,7 @@ class ScheduleController extends Controller
         return back()->with('success', 'Jadwal dihapus!');
     }
 
-    public function approve($id)
-    {
-        $booking = Booking::with(['user', 'lab_relation'])->findOrFail($id);
-
-        if ($booking->lab === 'TBD' || empty($booking->lab)) {
-            return back()->with('error', '⚠️ Gagal! Lab belum dipilih. Silakan tetapkan Lab terlebih dahulu sebelum menyetujui.');
-        }
-
-        // UPDATE STATUS JADI APPROVED (TIDAK DIHAPUS BIAR BISA JADI HISTORI)
-        $booking->update([
-            'status' => 'approved'
-        ]);
-
-        $hari = \Carbon\Carbon::parse($booking->tanggal)->locale('id')->translatedFormat('l');
-
-        Schedule::create([
-            'tanggal'     => $booking->tanggal,
-            'hari'        => $hari,
-            'lab'         => $booking->lab, 
-            'jam_mulai'   => $booking->jam_mulai,
-            'jam_selesai' => $booking->jam_selesai,
-            'matkul'      => $booking->keperluan,
-            'sks'         => $booking->sks ?? 0,
-            'dosen'       => $booking->user->name ?? 'No Name',
-        ]);
-
-        $this->sendWhatsAppNotification($booking);
-
-        return back()->with('success', '✅ Booking disetujui, masuk ke jadwal tetap, dan WA terkirim!');
-    }
+  
 
     private function sendWhatsAppNotification($booking)
     {

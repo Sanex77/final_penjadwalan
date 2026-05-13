@@ -10,6 +10,7 @@ use App\Http\Controllers\LabController;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -169,6 +170,8 @@ Route::get('/spv/lab', [\App\Http\Controllers\LabController::class, 'index'])->n
 Route::post('/spv/lab', [\App\Http\Controllers\LabController::class, 'store'])->name('lab.store');
 Route::delete('/spv/lab/{id}', [\App\Http\Controllers\LabController::class, 'destroy'])->name('lab.destroy'); 
 Route::put('/lab/{id}', [\App\Http\Controllers\LabController::class, 'update'])->name('lab.update');
+// Contoh rute di web.php kamu
+Route::get('/spv/akun', [UserController::class, 'manajemenAkun'])->name('spv.akun');
 });
 
 

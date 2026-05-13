@@ -58,5 +58,13 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function manajemenAkun()
+{
+    // Ambil semua user dari database, diurutkan dari yang terbaru
+    $users = \App\Models\User::orderBy('created_at', 'desc')->get();
+    
+    return view('spv.akun', compact('users'));
+}
     
 }

@@ -7,20 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 // Di sini kita kasih "Izin Masuk" untuk semua kolom yang mau diisi SPV
-#[Fillable([
-    'tanggal', 
-    'hari', 
-    'lab', 
-    'jam_mulai', 
-    'jam_selesai', 
-    'matkul', 
-    'sks', 
-    'dosen',
-    'nama_asisten'
-])]
+
 class Schedule extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'tanggal', 
+        'hari', 
+        'lab', 
+        'jam_mulai', 
+        'jam_selesai', 
+        'matkul', 
+        'sks', 
+        'dosen',
+        'nama_asisten'
+    ];
 
     /**
      * Tips: Kamu bisa menambahkan casts kalau ingin jam_mulai 
