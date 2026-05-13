@@ -13,7 +13,9 @@ return new class extends Migration
 {
     Schema::create('labs', function (Blueprint $table) {
         $table->id(); // Ini adalah Primary Key (#) otomatis
-        $table->string('nm_lab')->unique(); // Atribut deskriptor Nama Lab yang unik
+        $table->string('nm_lab')->unique();
+        $table->integer('kapasitas');
+        $table->text('fasilitas');
         $table->timestamps();
     });
 }
